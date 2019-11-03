@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="sql-labs20"><meta name="keywords" content="sql"><meta name="author" content="Somnus"><meta name="copyright" content="Somnus"><title>sql-labs20 | Somnus's blog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Less-20"><span class="toc-number">1.</span> <span class="toc-text">Less-20</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Somnus</div><div class="author-info__description text-center">与其哀叹，不如埋头苦干</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">69</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">14</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">24</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Somnus's blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">sql-labs20</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-07-08</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/sql-labs/">sql-labs</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>sql-labs20通关记录<a id="more"></a></p>
+<h2 id="Less-20"><a href="#Less-20" class="headerlink" title="Less-20"></a>Less-20</h2><p>今天的靶场是Less-20,这关涉及cookie,要深入理解的话我们就一行行分析源代码</p>
+<p><img src="/img/sql-labs20/1.png" alt=""></p>
+<p>首先，来到程序的第一个分支点，$_COOKIE这个变量是能获取到报文头部所包含的cookie字段其中的信息，我们可以分析出如果要执行这个if语句，则cookie的’uname’字段中是没有信息的。</p>
+<p><img src="/img/sql-labs20/2.png" alt=""></p>
+<p>那么网页首先显示的是跟前几个关卡相似的登录页面。<br>接下来来到第一个分支点里的又一个分支点</p>
+<p><img src="/img/sql-labs20/3.png" alt=""></p>
+<p>可以看出当我们在网页中的表单中提交用户名和账号信息时，则开始执行这个if语句</p>
+<p><img src="/img/sql-labs20/4.png" alt=""></p>
+<p>就开始查询数据库里的用户名和密码信息</p>
+<p><img src="/img/sql-labs20/5.png" alt=""></p>
+<p>并且将查询结果的’username’字段中的用户名信息赋值给$cookee</p>
+<p><img src="/img/sql-labs20/6.png" alt=""></p>
+<p>如果查询结果不为空</p>
+<p><img src="/img/sql-labs20/7.png" alt=""></p>
+<p>则设置将cookie中设置名为’uname’的字段，并给该字段赋值$cookee变量的值，也就是之前查询到的用户名信息，并且设置该字段的生存时间<br>如果查询结果为空，则返回一个查询失败的信息</p>
+<p><img src="/img/sql-labs20/8.png" alt=""></p>
+<p>也就是说当我们在网页的表单中输入用户名和密码时，当查询结果不为空时，则在cookie中设置字段值<br>我们用burp抓包看看报文的详细信息</p>
+<p><img src="/img/sql-labs20/9.png" alt=""></p>
+<p>我们先查询一下users表里的信息</p>
+<p><img src="/img/sql-labs20/10.png" alt=""></p>
+<p>接着输入一个users表中存在的用户名和密码</p>
+<p><img src="/img/sql-labs20/11.png" alt=""></p>
+<p>这是我们提交表单给服务器的POST报文，来看看服务器这时返回的信息是什么</p>
+<p><img src="/img/sql-labs20/12.png" alt=""></p>
+<p>可以看出服务器设置了cookie信息</p>
+<p><img src="/img/sql-labs20/13.png" alt=""></p>
+<p>并且返回这些信息，可见这就是一开始的登录页面加上</p>
+<p><img src="/img/sql-labs20/14.png" alt=""></p>
+<p>查询结果后返回的信息<br>那么我们放行这个请求报文，看看接下来发生什么</p>
+<p><img src="/img/sql-labs20/15.png" alt=""></p>
+<p>放行后出现了第二个请求报文，这是个GET请求报文，我们可以看出此时头部已经有了cookie信息，我们再来看看服务器的回应</p>
+<p><img src="/img/sql-labs20/16.png" alt=""></p>
+<p>我们再回头看看源代码，发现此时执行了第二个节点，此时cookie中的’uname’字段已经有了信息，则执行了else语句<br>这个else语句中又包含了一个节点</p>
+<p><img src="/img/sql-labs20/17.png" alt=""></p>
+<p>也就是当我们还未点击submit按钮时会执行这个if语句</p>
+<p>然后</p>
+<p><img src="/img/sql-labs20/18.png" alt=""></p>
+<p>返回一些信息</p>
+<p><img src="/img/sql-labs20/19.png" alt=""></p>
+<p>并且以cookee变量的值作为用户名进行数据库的查询<br>然后将查询到的信息输出出来，最后一行会出现一个submit按钮<br>接下来我们放行第二个报文</p>
+<p><img src="/img/sql-labs20/20.png" alt=""></p>
+<p>放行后可以看到网页发生了变化，也就是返回了还未提交submit时的信息<br>我们点击一下submit按钮，这时看看请求的报文格式</p>
+<p><img src="/img/sql-labs20/21.png" alt=""></p>
+<p>可以看出这是一个POST请求报文，这时还又cookie信息，我们再来看看服务器返回的报文</p>
+<p><img src="/img/sql-labs20/22.png" alt=""></p>
+<p>这时服务器发现cookie中的’expires’字段中的时间发生了变化，’uname’字段内容为空时，默认内容为deleted，并且返回</p>
+<p><img src="/img/sql-labs20/23.png" alt=""></p>
+<p>可见当我们点击submit按钮后执行了else语句</p>
+<p><img src="/img/sql-labs20/24.png" alt=""></p>
+<p>放行这个POST请求报文</p>
+<p><img src="/img/sql-labs20/25.png" alt=""></p>
+<p>又出现了一个GET请求报文，看出此时cookie信息已经被删除了</p>
+<p><img src="/img/sql-labs20/26.png" alt=""></p>
+<p>又回到了一开始的登录界面<br>这里就涉及了一个重定向“location”它的作用是不用用户输入网址，它会自动访问，一般是GET请求，所以我们之前能抓到两个请求报文，且网页最后显示是重定向后的最终页面</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Somnus</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://nikoeurus.github.io/2018/07/08/sql-labs20/">https://nikoeurus.github.io/2018/07/08/sql-labs20/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Nikoeurus.github.io">Somnus's blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/sql/">sql</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/07/09/sql-labs23-28/"><i class="fa fa-chevron-left">  </i><span>sql-labs23-28</span></a></div><div class="next-post pull-right"><a href="/2018/07/08/sql-labs17/"><span>sql-labs17</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By Somnus</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
