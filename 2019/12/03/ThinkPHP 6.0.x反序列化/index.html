@@ -58,6 +58,9 @@
 <p>后面就是延续tp5反序列化的触发<code>toString</code>魔术方法了</p>
 <p>那么先整理一下目前的流程图</p>
 <p><img src="../../../../img/tp6/10.png" alt=""></p>
+<p>前半部分参数如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;exists = <span class="keyword">true</span>;</span><br><span class="line"><span class="keyword">$this</span>-&gt;$lazySave = <span class="keyword">true</span>;</span><br><span class="line"><span class="keyword">$this</span>-&gt;$withEvent = <span class="keyword">false</span>;</span><br></pre></td></tr></table></figure>
+
 <h4 id="寻找-toString触发点"><a href="#寻找-toString触发点" class="headerlink" title="寻找__toString触发点"></a>寻找__toString触发点</h4><p><strong>vendor/topthink/think-orm/src/model/concern/Conversion.php</strong></p>
 <p><img src="../../../../img/tp6/11.png" alt=""></p>
 <p>跟进<code>$this-&gt;toJson()</code>方法</p>
